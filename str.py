@@ -124,7 +124,7 @@ def temperature_scale(logits, t):
     return new_logits
 
 ## RUNCPU
-temperature = nn.Parameter(torch.ones(1).cpu() * 1.5)
+temperature = nn.Parameter(torch.ones(1).cuda() * 1.5)
 def set_temperature(model, data_root, img_size):
     """
     Tune the tempearature of the model (using the validation set).
