@@ -123,13 +123,15 @@ def temperature_scale(logits, t):
     new_logits = torch.div(logits, temp)
     return new_logits
 
-temperature = nn.Parameter(torch.ones(1).cuda() * 1.5)
+## RUNCPU
+temperature = nn.Parameter(torch.ones(1).cpu() * 1.5)
 def set_temperature(model, data_root, img_size):
     """
     Tune the tempearature of the model (using the validation set).
     We're going to set it to optimize NLL.
     valid_loader (DataLoader): validation set loader
     """
+    ## RUNCPU
     model.cuda()
     ece_criterion = _ECELoss(model).cuda()
 
@@ -155,6 +157,7 @@ def set_temperature(model, data_root, img_size):
             l = model.forward(image.to(model.device))
             logits_list.append(l)
             labels_list.append(data[filename])
+        ## RUNCPU
         logits = torch.cat(logits_list).cuda()
         labels = labels_list
 
@@ -245,6 +248,7 @@ def main():
     parser.add_argument('--new', action='store_true', default=False, help='Evaluate on new benchmark datasets')
     parser.add_argument('--custom', action='store_true', default=True, help='Evaluate on custom personal datasets')
     parser.add_argument('--rotation', type=int, default=0, help='Angle of rotation (counter clockwise) in degrees.')
+    ## RUNCPU
     parser.add_argument('--device', default='cuda')
     parser.add_argument('--inference', action='store_true', default=False, help='Run inference and store prediction results')
     parser.add_argument('--tune_temperature', action='store_true', default=False,
